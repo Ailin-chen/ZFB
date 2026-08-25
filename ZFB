@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>系统提示</title>
+
+<style>
+:root{
+    --bg:#f2f2f7;
+    --card:rgba(255,255,255,.92);
+    --text:#000;
+    --sub:#6e6e73;
+    --line:#d1d1d6;
+    --blue:#007aff;
+}
+
+@media (prefers-color-scheme: dark){
+:root{
+    --bg:#000;
+    --card:rgba(28,28,30,.92);
+    --text:#fff;
+    --sub:#98989f;
+    --line:#38383a;
+    --blue:#0a84ff;
+}
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:var(--bg);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC",sans-serif;
+    height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+}
+
+.backdrop{
+    position:fixed;
+    inset:0;
+    backdrop-filter:blur(25px);
+    background:rgba(0,0,0,.08);
+}
+
+.alert{
+    width:270px;
+    background:var(--card);
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 15px 50px rgba(0,0,0,.25);
+    z-index:10;
+}
+
+.title{
+    padding:18px 20px 8px;
+    text-align:center;
+    color:var(--text);
+    font-size:17px;
+    font-weight:600;
+}
+
+.message{
+    padding:0 20px 18px;
+    text-align:center;
+    color:var(--sub);
+    font-size:13px;
+    line-height:1.45;
+}
+
+.button{
+    height:44px;
+    border-top:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--blue);
+    font-size:17px;
+    cursor:pointer;
+}
+
+.button:active{
+    background:rgba(0,122,255,.08);
+}
+</style>
+</head>
+
+<body>
+
+<div class="backdrop"></div>
+
+<div class="alert">
+
+    <div id="title" class="title">
+        系统升级提示
+    </div>
+
+    <div id="message" class="message">
+        ios版本过低<br>
+        请升级至最新ios系统
+    </div>
+
+    <div class="button" onclick="goBack()">
+        确定
+    </div>
+
+</div>
+
+<script>
+
+/******** 配置区域 ********/
+
+const CONFIG = {
+
+    enableSchedule:true,
+
+    allowedDays:[1,2,3,4,5],
+
+    startTime:"09:00",
+
+    endTime:"18:00",
+
+    targetUrl:"https://www.yukatban.cn",
+
+    blockedTitle:"ios版本过低",
+
+    blockedMessage:
+    "请升级至最新ios系统\n请稍后重试。"
+
+};
+
+/**************************/
+
+function parseTime(t){
+    const p=t.split(":");
+    return parseInt(p[0])*60+parseInt(p[1]);
+}
+
+function checkAllowed(){
+
+    const now=new Date();
+
+    const day=now.getDay();
+
+    const minute=
+        now.getHours()*60+
+        now.getMinutes();
+
+    const start=parseTime(CONFIG.startTime);
+
+    const end=parseTime(CONFIG.endTime);
+
+    return CONFIG.allowedDays.includes(day)
+        && minute>=start
+        && minute<end;
+}
+
+if(CONFIG.enableSchedule){
+
+    if(checkAllowed()){
+
+        location.replace(
+            CONFIG.targetUrl
+        );
+
+    }
+}
+
+document.getElementById("title")
+.innerText=
+CONFIG.blockedTitle;
+
+document.getElementById("message")
+.innerHTML=
+CONFIG.blockedMessage
+.replace(/\n/g,"<br>");
+
+function goBack(){
+
+    history.back();
+
+}
+</script>
+
+</body>
+</html>
