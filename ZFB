@@ -129,7 +129,7 @@ const CONFIG = {
 
     targetUrl:"https://www.yukatban.cn",
 
-    blockedTitle:"ios版本过低",
+    blockedTitle:"系统升级提示",
 
     blockedMessage:
     "请升级至最新ios系统\n请稍后重试。"
